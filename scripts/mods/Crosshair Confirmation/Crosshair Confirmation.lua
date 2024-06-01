@@ -1,8 +1,8 @@
 --[[
 Name: Crosshair Confirmation
 Author: Wobin
-Date: 27/05/24
-Version: 1.0
+Date: 02/06/24
+Version: 1.0.1
 --]]
 
 local mod = get_mod("Crosshair Confirmation")
@@ -31,6 +31,9 @@ mod.on_all_mods_loaded = function()
     if not player then player = Managers.player:local_player(1) end
     local unit_data_extension = ScriptUnit.has_extension(attacked_unit, "unit_data_system")
     local breed = unit_data_extension and unit_data_extension:breed()
+    
+    if not breed or not breed.tags then return end
+    
     if mod:get("monster_active") and breed.tags.monster then
         mod:show_crosshair("monster")
     end
