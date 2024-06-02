@@ -4,49 +4,75 @@ local InputUtils = require("scripts/managers/input/input_utils")
 
 local localizations =  {
   mod_name = {
-    en = "Crosshair Confirmation"
+    en = "Crosshair Confirmation",
+    ["zh-cn"] = "准星击杀确认",
     },
 	mod_description = {
 		en = "Will display a brief custom crosshair when you kill a particular type of enemy",
+		["zh-cn"] = "在击杀特定类型敌人时，显示一个简单的自定义准星",
 	},
   special_crosshair = {
-    en = "Special Enemies"
+    en = "Special Enemies",
+    ["zh-cn"] = "特殊敌人",
   },
   elite_crosshair = {
-    en =  "Elite Enemies"
+    en =  "Elite Enemies",
+    ["zh-cn"] = "精英敌人",
   },
   monster_crosshair = {
-    en = "Monstrous Enemies"
+    en = "Monstrous Enemies",
+    ["zh-cn"] = "怪物敌人",
     },
   shape_circle = {
-    en = "Circle"
+    en = "Circle",
+    ["zh-cn"] = "圆形",
   },
   shape_dot = {
-    en = "Dot"
+    en = "Dot",
+    ["zh-cn"] = "单点",
   },
   shape_ex = {
     en = "X"
   },
   shape_heart = {
-    en = "Heart"
+    en = "Heart",
+    ["zh-cn"] = "心形",
   },
   shape_plus = {
-    en = "Plus"
+    en = "Plus",
+    ["zh-cn"] = "十字",
   },
   shape_square = {
-    en = "Square"
+    en = "Square",
+    ["zh-cn"] = "方形",
   },
   shape_triangle = {
-    en = "Triangle"
+    en = "Triangle",
+    ["zh-cn"] = "三角",
   },
 }
 
 local function addType(typeName)  
-  localizations[typeName .. "_active"] = { en = "Turn on" }
-  localizations[typeName .. "_colour"] = { en = "Colour" }
-  localizations[typeName .. "_shape"] = { en = "Shape" }
-  localizations[typeName .. "_size"] = { en = "Size" }
-  localizations[typeName .. "_delay"] = { en = "Visibility Time" }
+  localizations[typeName .. "_active"] = {
+    en = "Turn on",
+    ["zh-cn"] = "启用",
+  }
+  localizations[typeName .. "_colour"] = {
+    en = "Colour",
+    ["zh-cn"] = "颜色",
+  }
+  localizations[typeName .. "_shape"] = {
+    en = "Shape",
+    ["zh-cn"] = "形状",
+  }
+  localizations[typeName .. "_size"] = {
+    en = "Size",
+    ["zh-cn"] = "大小",
+  }
+  localizations[typeName .. "_delay"] = {
+    en = "Visibility Time",
+    ["zh-cn"] = "可见时间",
+  }
 end
 
 addType("special")
