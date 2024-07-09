@@ -2,12 +2,12 @@ local mod = get_mod("Crosshair Confirmation")
 local UIHudSettings = require("scripts/settings/ui/ui_hud_settings")
 
 mod.texture_lookup = {
-  ["circle"] = "https://wobin.github.io/CrosshairConfirmation/images/circle.png",
-  ["dot"] = "https://wobin.github.io/CrosshairConfirmation/images/dot.png",
-  ["ex"] = "https://wobin.github.io/CrosshairConfirmation/images/ex.png",
-  ["heart"] = "https://wobin.github.io/CrosshairConfirmation/images/heart.png",
-  ["plus"] = "https://wobin.github.io/CrosshairConfirmation/images/plus.png",
-  ["square"] = "https://wobin.github.io/CrosshairConfirmation/images/square.png",
+  ["circle"] =   "https://wobin.github.io/CrosshairConfirmation/images/circle.png",
+  ["dot"] =      "https://wobin.github.io/CrosshairConfirmation/images/dot.png",
+  ["ex"] =       "https://wobin.github.io/CrosshairConfirmation/images/ex.png",
+  ["heart"] =    "https://wobin.github.io/CrosshairConfirmation/images/heart.png",
+  ["plus"] =     "https://wobin.github.io/CrosshairConfirmation/images/plus.png",
+  ["square"] =   "https://wobin.github.io/CrosshairConfirmation/images/square.png",
   ["triangle"] = "https://wobin.github.io/CrosshairConfirmation/images/triangle.png",
 }
 

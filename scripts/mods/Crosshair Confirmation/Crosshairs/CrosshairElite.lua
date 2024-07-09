@@ -40,6 +40,7 @@ Crosshair = class("CrosshairTemplate_elite", "HudElementBase")
 
 function Crosshair:init(parent, draw_layer, start_scale)
   Crosshair.super.init(self, parent, draw_layer, start_scale, Definitions)  
+  mod.crosshair["elite"] = self
 end
 
 return Crosshair
