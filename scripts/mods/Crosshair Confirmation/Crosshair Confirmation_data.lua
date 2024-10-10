@@ -10,7 +10,15 @@ mod.texture_lookup = {
   ["square"] =   "https://wobin.github.io/CrosshairConfirmation/images/square.png",
   ["triangle"] = "https://wobin.github.io/CrosshairConfirmation/images/triangle.png",
 }
-
+mod.dls_lookup = {
+  ["circle"] =   "circle.png",
+  ["dot"] =      "dot.png",
+  ["ex"] =       "ex.png",
+  ["heart"] =    "heart.png",
+  ["plus"] =     "plus.png",
+  ["square"] =   "square.png",
+  ["triangle"] = "triangle.png",
+}
 local options = {
     name = mod:localize("mod_name"),
     description = mod:localize("mod_description"),

@@ -25,7 +25,7 @@ local Definitions = {
           size = {mod:get("monster_size"),mod:get("monster_size")},
           color = Color[mod:get("monster_colour")](255,true),			
           material_values = {
-            texture_map = mod.textures[mod:get("monster_shape")] and mod.textures[mod:get("monster_shape")].texture or nil
+            texture_map = nil --mod.textures[mod:get("monster_shape")] and mod.textures[mod:get("monster_shape")].texture or nil
           },          
         },
         visibility_function = function() return mod.monster_show end,
@@ -34,7 +34,7 @@ local Definitions = {
   }
 }
 
-Crosshair = class("CrosshairTemplate_monster", "HudElementBase")
+local Crosshair = class("CrosshairTemplate_monster", "HudElementBase")
 
 function Crosshair:init(parent, draw_layer, start_scale)
   Crosshair.super.init(self, parent, draw_layer, start_scale, Definitions)  

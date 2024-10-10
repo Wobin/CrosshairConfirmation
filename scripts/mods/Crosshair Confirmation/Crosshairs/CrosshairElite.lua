@@ -2,8 +2,6 @@ local UIWorkspaceSettings = require("scripts/settings/ui/ui_workspace_settings")
 local UIWidget = require("scripts/managers/ui/ui_widget")
 local mod = get_mod("Crosshair Confirmation")
 
-local templateName = mod.templateName
-
 local Definitions = {
   scenegraph_definition = {
     screen = UIWorkspaceSettings.screen,
@@ -27,7 +25,7 @@ local Definitions = {
           size = {mod:get("elite_size"),mod:get("elite_size")},
           color = Color[mod:get("elite_colour")](255,true),			
           material_values = {
-            texture_map = mod.textures[mod:get("elite_shape")] and mod.textures[mod:get("elite_shape")].texture or nil
+            texture_map = nil,--mod.textures[mod:get("elite_shape")] and mod.textures[mod:get("elite_shape")].texture or nil
           },          
         },
         visibility_function = function() return mod.elite_show end,
@@ -36,7 +34,7 @@ local Definitions = {
   }
 }
 
-Crosshair = class("CrosshairTemplate_elite", "HudElementBase")
+local Crosshair = class("CrosshairTemplate_elite", "HudElementBase")
 
 function Crosshair:init(parent, draw_layer, start_scale)
   Crosshair.super.init(self, parent, draw_layer, start_scale, Definitions)  

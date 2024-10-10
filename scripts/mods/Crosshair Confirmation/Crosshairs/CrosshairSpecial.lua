@@ -25,16 +25,16 @@ local Definitions = {
           size = {mod:get("special_size"),mod:get("special_size")},
           color = Color[mod:get("special_colour")](255,true),			
           material_values = {
-            texture_map = mod.textures[mod:get("special_shape")] and mod.textures[mod:get("special_shape")].texture or nil
+            texture_map = nil-- mod.textures[mod:get("special_shape")] and mod.textures[mod:get("special_shape")].texture or nil
           },          
         },
-        visibility_function = function() return mod.special_show end,
+        visibility_function = function() return  mod.special_show end,
       }
     }, "crosshair")
   }
 }
 
-Crosshair = class("CrosshairTemplate_special", "HudElementBase")
+local Crosshair = class("CrosshairTemplate_special", "HudElementBase")
 
 function Crosshair:init(parent, draw_layer, start_scale)
   Crosshair.super.init(self, parent, draw_layer, start_scale, Definitions)   

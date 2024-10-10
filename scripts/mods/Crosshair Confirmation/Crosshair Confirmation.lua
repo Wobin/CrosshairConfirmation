@@ -1,28 +1,47 @@
 --[[
 Name: Crosshair Confirmation
 Author: Wobin
-Date: 06/07/24
-Version: 1.2d
+Date: 11/10/24
+Version: 1.4
 --]]
 
 local mod = get_mod("Crosshair Confirmation")
-mod.version = "1.2d"
+local DLS = get_mod("DarktideLocalServer")
+mod.version = "1.4"
 mod.textures = {}
 mod.crosshair = {}
+mod.special_show = false
+mod.elite_show = false
+mod.monster_show = false
 mod.loader = Managers.url_loader
 
-mod.load_crosshair = function(self, crosshair, shape)        
+mod.load_crosshair = function(self, crosshair, shape) 
+    if not Managers.backend:authenticated() then
+      Managers.backend:authenticate():next(function() 
+        Promise.delay(1):next(function() 
+            mod:load_crosshair(crosshair, shape)
+            return
+        end)
+      end):catch(function (error_data)
+        mod:dump(error_data)
+      end)
+    end
     if mod.textures[shape] and mod.textures[shape].texture then 
     crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
   else
-    mod:echo("load_crosshair -> load texture ".. mod.texture_lookup[shape])
-    mod:dump(mod.textures[shape].texture, "texture",1)
-    mod.loader:load_texture(mod.texture_lookup[shape]):next(function(data)
-        mod:dump(data, "data",1)
-        mod.textures[shape] = data           
-        crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
+    if DLS then
+      local texture_dir = DLS.absolute_path("images")      
+      DLS.get_image(texture_dir.. "\\".. mod.dls_lookup[shape]):next(function(data)          
+          mod.textures[shape] = data           
+          crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
+          mod:dump(mod.textures[shape], "shapes")
+        end):catch(function() mod:echo("Failed to get image") end)
+    else
+      mod.loader:load_texture(mod.texture_lookup[shape]):next(function(data)
+          mod.textures[shape] = data           
+          crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
+      end)
     end
-      )
   end
 end
 
@@ -32,21 +51,18 @@ end
 
 mod.show_crosshair = function(self, templateType)  
   if not mod.textures[mod:get(templateType.."_shape")] or not mod.textures[mod:get(templateType.."_shape")].texture then     
-    mod:echo("show_crosshair -> no texture -> load_crosshair")
     mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))
     return 
   end
     
-  if not checktex(mod.crosshair[templateType], mod:get(templateType.."_shape")) then    
-    mod:echo("show_crosshair -> no texturemap -> load_crosshair")
-    mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))
+  if not checktex(mod.crosshair[templateType], mod:get(templateType.."_shape")) then        
+    mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))    
     return
   end
-  
   if mod[templateType.. "_show"] then return end
-  
   mod[templateType.. "_show"] = true
-  Promise.delay(mod:get(templateType.."_delay")):next(function() mod[templateType.. "_show"] = false end)  
+  Promise.delay(mod:get(templateType.."_delay")):next(function()       
+      mod[templateType.. "_show"] = false end)  
 end
 
 
@@ -83,7 +99,6 @@ local promises = {}
     if not mod.textures[i:lower()] then
       local item = mod.loader:load_texture(v):next(function(data)                 
           if not data.texture then 
-            mod:dump(data, "unloaded texture", 1)
             mod.refresh = true 
           else
             mod.textures[i:lower()] = data           
@@ -95,10 +110,10 @@ local promises = {}
   Promise.all(unpack(promises)) 
 end
 
-Managers.backend:authenticate()
 
 
 mod.on_all_mods_loaded = function()    
+  mod:info(mod.version)
   mod:hook_safe("HudElementCombatFeed", "event_combat_feed_kill", function(self, attacking_unit, attacked_unit)       
     if mod.refresh then 
       mod.refresh = false
@@ -106,6 +121,7 @@ mod.on_all_mods_loaded = function()
       return
     end
     if not player then player = Managers.player:local_player(1) end
+    if not player then return end
     if player.player_unit ~= attacking_unit then return end
     local unit_data_extension = ScriptUnit.has_extension(attacked_unit, "unit_data_system")
     local breed = unit_data_extension and unit_data_extension:breed()
@@ -115,13 +131,19 @@ mod.on_all_mods_loaded = function()
     if mod:get("monster_active") and breed.tags.monster then
         mod:show_crosshair("monster")
     end
-    if mod:get("special_active") and breed.tags.special then
+    if mod:get("special_active") and breed.tags.special then        
         mod:show_crosshair("special")
     end
     if mod:get("elite_active") and breed.tags.elite then
         mod:show_crosshair("elite")
     end    
   end)
-  
-  mod:run_promises()
+  if not Managers.backend:authenticated() then
+    Managers.backend:authenticate():next(function() 
+      mod:run_promises()    
+    end):catch(function(errors)
+      mod:dump(errors)
+      mod:info("Error authenticating")
+      end)
+  end  
 end
