@@ -2,12 +2,12 @@
 Name: Crosshair Confirmation
 Author: Wobin
 Date: 11/10/24
-Version: 1.4
+Version: 1.4.1
 --]]
 
 local mod = get_mod("Crosshair Confirmation")
 local DLS = get_mod("DarktideLocalServer")
-mod.version = "1.4"
+mod.version = "1.4.1"
 mod.textures = {}
 mod.crosshair = {}
 mod.special_show = false
@@ -33,8 +33,7 @@ mod.load_crosshair = function(self, crosshair, shape)
       local texture_dir = DLS.absolute_path("images")      
       DLS.get_image(texture_dir.. "\\".. mod.dls_lookup[shape]):next(function(data)          
           mod.textures[shape] = data           
-          crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
-          mod:dump(mod.textures[shape], "shapes")
+          crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].textur          
         end):catch(function() mod:echo("Failed to get image") end)
     else
       mod.loader:load_texture(mod.texture_lookup[shape]):next(function(data)
@@ -51,14 +50,13 @@ end
 
 mod.show_crosshair = function(self, templateType)  
   if not mod.textures[mod:get(templateType.."_shape")] or not mod.textures[mod:get(templateType.."_shape")].texture then     
-    mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))
-    return 
+    mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))    
   end
     
-  if not checktex(mod.crosshair[templateType], mod:get(templateType.."_shape")) then        
-    mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))    
-    return
+  if not checktex(mod.crosshair[templateType]) then        
+    mod:load_crosshair(mod.crosshair[templateType], mod:get(templateType.."_shape"))        
   end
+  
   if mod[templateType.. "_show"] then return end
   mod[templateType.. "_show"] = true
   Promise.delay(mod:get(templateType.."_delay")):next(function()       
@@ -67,7 +65,7 @@ end
 
 
     mod:register_hud_element({
-      class_name = "CrosshairTemplate_elite",
+      class_name = "CrosshairTemplate_Elite",
       filename = "Crosshair Confirmation/scripts/mods/Crosshair Confirmation/Crosshairs/CrosshairElite",
       use_hud_scale = true,
       visibility_groups = {
@@ -75,7 +73,7 @@ end
       },    
     })
     mod:register_hud_element({
-      class_name = "CrosshairTemplate_monster",
+      class_name = "CrosshairTemplate_Monster",
       filename = "Crosshair Confirmation/scripts/mods/Crosshair Confirmation/Crosshairs/CrosshairMonster",
       use_hud_scale = true,
       visibility_groups = {
@@ -83,7 +81,7 @@ end
       },    
     })
     mod:register_hud_element({
-      class_name = "CrosshairTemplate_special",
+      class_name = "CrosshairTemplate_Special",
       filename = "Crosshair Confirmation/scripts/mods/Crosshair Confirmation/Crosshairs/CrosshairSpecial",
       use_hud_scale = true,
       visibility_groups = {
