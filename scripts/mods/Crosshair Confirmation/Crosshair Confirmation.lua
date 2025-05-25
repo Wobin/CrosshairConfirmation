@@ -1,13 +1,13 @@
 --[[
 Name: Crosshair Confirmation
 Author: Wobin
-Date: 11/10/24
-Version: 1.4.1
+Date: 24/05/25
+Version: 1.4.3
 --]]
 
 local mod = get_mod("Crosshair Confirmation")
 local DLS = get_mod("DarktideLocalServer")
-mod.version = "1.4.1"
+mod.version = "1.4.3"
 mod.textures = {}
 mod.crosshair = {}
 mod.special_show = false
@@ -15,34 +15,13 @@ mod.elite_show = false
 mod.monster_show = false
 mod.loader = Managers.url_loader
 
-mod.load_crosshair = function(self, crosshair, shape) 
-    if not Managers.backend:authenticated() then
-      Managers.backend:authenticate():next(function() 
-        Promise.delay(1):next(function() 
-            mod:load_crosshair(crosshair, shape)
-            return
-        end)
-      end):catch(function (error_data)
-        mod:dump(error_data)
-      end)
-    end
+mod.load_crosshair = function(self, crosshair, shape)    
     if mod.textures[shape] and mod.textures[shape].texture then 
-    crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
-  else
-    if DLS then
-      local texture_dir = DLS.absolute_path("images")      
-      DLS.get_image(texture_dir.. "\\".. mod.dls_lookup[shape]):next(function(data)          
-          mod.textures[shape] = data           
-          crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].textur          
-        end):catch(function() mod:echo("Failed to get image") end)
+      crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
     else
-      mod.loader:load_texture(mod.texture_lookup[shape]):next(function(data)
-          mod.textures[shape] = data           
-          crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map = mod.textures[shape].texture
-      end)
+      mod:run_promises()
     end
   end
-end
 
 local function checktex(crosshair)
   return crosshair._widgets_by_name.crosshair.style.crosshair_style.material_values.texture_map 
@@ -95,14 +74,23 @@ local promises = {}
 
  for i,v in pairs(mod.texture_lookup) do        
     if not mod.textures[i:lower()] then
-      local item = mod.loader:load_texture(v):next(function(data)                 
+      if DLS then
+        local texture_dir = DLS.absolute_path("images")      
+        local dlsItem = DLS.get_image(texture_dir.. "\\".. mod.dls_lookup[i:lower()]):next(function(data)          
+            mod.textures[i:lower()] = data                                   
+          end):catch(function() mod:echo("Failed to get image") end)        
+        table.insert(promises, dlsItem)
+      else
+        local item = mod.loader:load_texture(v):next(function(data)                 
           if not data.texture then 
             mod.refresh = true 
+            mod:echo("Failed initial texture load for ".. v)
           else
-            mod.textures[i:lower()] = data           
+            mod.textures[i:lower()] = data                       
           end
-      end)
-      table.insert(promises, item)
+        end)
+        table.insert(promises, item)
+      end
     end
   end   
   Promise.all(unpack(promises)) 
@@ -138,10 +126,12 @@ mod.on_all_mods_loaded = function()
   end)
   if not Managers.backend:authenticated() then
     Managers.backend:authenticate():next(function() 
-      mod:run_promises()    
+      mod:run_promises()          
     end):catch(function(errors)
       mod:dump(errors)
       mod:info("Error authenticating")
-      end)
+    end)
+  else
+    mod:run_promises()
   end  
 end

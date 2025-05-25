@@ -8,5 +8,9 @@ return {
 			mod_localization = "Crosshair Confirmation/scripts/mods/Crosshair Confirmation/Crosshair Confirmation_localization",
 		})
 	end,
+  load_after = {
+    "DarktideLocalServer",
+  },
+  version = "1.4.3",
 	packages = {},
 }
